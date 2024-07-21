@@ -1,11 +1,7 @@
 {
-  "name": "sharded_nfts_nil",
-  "module": "index.ts",
-  "type": "module",
+  "name": "hardhat-project",
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.6"
   }
 }

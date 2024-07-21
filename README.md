@@ -1,3 +1,3 @@
-# sharded_nfts_nil
+# Sharded NFTs =nil;
 
-Time to shard some NFTs?
+Let's explore sharded NFTs?
