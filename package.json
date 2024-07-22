@@ -1,7 +1,14 @@
 {
   "name": "hardhat-project",
   "devDependencies": {
+    "@nilfoundation/niljs": "^0.10.1",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.4.5",
     "hardhat": "^2.22.6"
+  },
+  "dependencies": {
+    "@nilfoundation/hardhat-plugin": "^0.1.9",
+    "@openzeppelin/contracts": "^5.0.2",
+    "viem": "^2.17.9"
   }
 }
