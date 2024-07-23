@@ -29,6 +29,6 @@ task("mint", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
   const NFTContract = await hre.ethers.getContractFactory("ShardedNFT");
   const nftContract = NFTContract.attach(nftAddress);
 
-  const response = await nftContract.mintTo(walletAddress.toLowerCase(), 28);
+  const response = await nftContract.mintTo(walletAddress.toLowerCase(), 26);
   console.log(response);
 });
