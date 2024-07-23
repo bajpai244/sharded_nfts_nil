@@ -47,6 +47,4 @@ contract ShardedNFT is ERC721, Ownable {
 
         return shardID;
     }
-
-
 }
