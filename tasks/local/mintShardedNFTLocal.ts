@@ -14,8 +14,12 @@ task("mint_local", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
     }
 
 
-    const nftAddress = "0x47623ee2cD178Bb38431Efe88E77a1cdea070B44";
-    const shardId = 1;
+    const nftAddress = process.env.NFT_CONTRACT_LOCAL_ADDR as Hex | undefined;
+    if (!nftAddress) {
+        throw new Error("NFT_CONTRACT_LOCAL_ADDR is not set");
+    }
+
+    console.log('nftAddress', nftAddress);
 
     const provider = new hre.ethers.JsonRpcProvider('http://127.0.0.1:8545');
     const wallet = new hre.ethers.Wallet(privateKey, provider);
@@ -31,10 +35,6 @@ task("mint_local", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
 
     const contract = factory.attach(nftAddress);
 
-    // const result = await contract.mintTo(wallet.address, 1);
-
-    const result = await contract.getShardID(1);
-    console.log('result', result);
-
-
+    let mintResult = await contract.mintTo(wallet.address, 26);
+    console.log('mint result', mintResult);
 });

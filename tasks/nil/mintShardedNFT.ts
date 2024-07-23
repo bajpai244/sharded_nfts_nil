@@ -57,16 +57,18 @@ task("mint", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
     const artifact = await hre.artifacts.readArtifact("ShardedNFT");
     const abi = artifact.abi;
 
+    console.log("nftAddress is", nftAddress);
+
     const hash = await wallet.sendMessage({
         to: nftAddress,
        data: encodeFunctionData(
         {
          abi,
          functionName: "mintTo",
-        args: [walletAddress.toLowerCase(), 0],
+        args: [walletAddress.toLowerCase(), 28],
         }),
-        gas: 10000000n,
-        value: 0n
+        gas: 200000n,
+        value : 5000000n,
     });
 
     console.log('NFT mint transaction hash: ', hash);
@@ -78,11 +80,25 @@ const result =  await client.call({
             {
                 abi,
                 functionName: "getShardID",
-                args: [0]
+                args: [28]
             }
         ),
     }, "latest");
 
-    console.log("hardhat result", result);
+    console.log("shard ID to be deployed:", result);
+
+    const currentShardIDResult =  await client.call({
+        from: walletAddress,
+        to: nftAddress,
+        data: encodeFunctionData(
+            {
+                abi,
+                functionName: "shardId",
+                args: []
+            }
+        ),
+    }, "latest");
+
+    console.log("shard ID of the current contract:", currentShardIDResult);
 
 });

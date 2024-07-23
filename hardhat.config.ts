@@ -10,6 +10,12 @@ import "./tasks/local/deployShardedNFTLocal";
 import "./tasks/nil/mintShardedNFT"
 import "./tasks/local/mintShardedNFTLocal"
 
+import "./tasks/nil/deployRevert"
+import "./tasks/nil/revert"
+
+import "./tasks/local/deployRevertLocal"
+import "./tasks/local/revertLocal"
+
 dotenv.config();
 
 const config: NilHardhatUserConfig = {

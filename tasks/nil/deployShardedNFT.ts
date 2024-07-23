@@ -57,8 +57,9 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(async (taskArgs, hre
       abi,
       salt: BigInt(Math.floor(Math.random() * 10000)),
       shardId,
-      gas: 10000000n,
-      args: [1,4,100]
+      args: [1,4,100],
+      gas: 200000n,
+      value : 5000000n,
     });
 
     await waitTillCompleted(client, 1, hash);

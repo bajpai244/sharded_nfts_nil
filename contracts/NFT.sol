@@ -15,19 +15,19 @@ contract ShardedNFT is ERC721, Ownable {
         _;
     }
 
-    uint256 shardId;
-    uint256 totalSupply;
-    uint256 numberOfShards;
+    uint256 public shardId;
+    uint256 public totalSupply;
+    uint256 public numberOfShards;
 
     // Constructor will be called on contract creation
-    constructor(uint256 _shardId, uint256 _numberOfShards, uint256 _totalSupply) ERC721("ShardedNFTToken", "SNT") Ownable(msg.sender) {
+    constructor(uint256 _shardId, uint256 _numberOfShards, uint256 _totalSupply) ERC721("ShardedNFTToken", "SNT") Ownable(msg.sender) payable {
         shardId = _shardId;
         numberOfShards = _numberOfShards;
         totalSupply = _totalSupply;
     }
 
     // Allows minting of a new NFT
-    function mintTo(address collector, uint256 tokenId) public onlyOwner() onlyThisShard(tokenId) {
+    function mintTo(address collector, uint256 tokenId) public onlyOwner() onlyThisShard(tokenId) payable{
         _safeMint(collector, tokenId);
     }
 
