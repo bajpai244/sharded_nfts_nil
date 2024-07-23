@@ -31,6 +31,49 @@ contract ShardedNFT is ERC721, Ownable {
         _safeMint(collector, tokenId);
     }
 
+     /**
+     * @dev See {IERC721-ownerOf}.
+     */
+    function ownerOf(uint256 tokenId) public view virtual override onlyThisShard(tokenId) returns (address) {
+        return super.ownerOf(tokenId);
+    }
+
+     /**
+     * @dev See {IERC721Metadata-tokenURI}.
+     */
+    function tokenURI(uint256 tokenId) public view override onlyThisShard(tokenId) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
+
+    /**
+     * @dev See {IERC721-approve}.
+     */
+    function approve(address to, uint256 tokenId) public override onlyThisShard(tokenId) {
+        return super.approve(to, tokenId);
+    }
+
+    /**
+     * @dev See {IERC721-getApproved}.
+     */
+    function getApproved(uint256 tokenId) public view override onlyThisShard(tokenId) returns (address) {
+        return super.getApproved(tokenId);
+    }
+
+    /**
+     * @dev See {IERC721-transferFrom}.
+     */
+    function transferFrom(address from, address to, uint256 tokenId) public override onlyThisShard(tokenId) {
+        return super.transferFrom(from, to, tokenId);
+    }
+
+    /**
+     * @dev See {IERC721-safeTransferFrom}.
+     */
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override onlyThisShard(tokenId) {
+        super.safeTransferFrom(from, to, tokenId, data);
+    }
+
     // function which our NFT contract can call on the shard to find which token ragnes are valid for its shard
     function getShardID(uint256 tokenID) public view returns (uint256) {
         // totalSupply is stored as part of the contract where this function lives
