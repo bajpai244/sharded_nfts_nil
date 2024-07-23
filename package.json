@@ -10,5 +10,12 @@
     "@nilfoundation/hardhat-plugin": "^0.1.9",
     "@openzeppelin/contracts": "^5.0.2",
     "viem": "^2.17.9"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat deploy",
+    "deploy_local": "hardhat deploy_local",
+    "mint": "hardhat mint",
+    "mint_local": "hardhat mint_local"
   }
 }

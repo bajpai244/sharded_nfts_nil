@@ -65,7 +65,7 @@ task("mint", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
         {
          abi,
          functionName: "mintTo",
-        args: [walletAddress.toLowerCase(), 28],
+        args: [walletAddress.toLowerCase(), 26],
         }),
         gas: 200000n,
         value : 5000000n,
@@ -80,7 +80,7 @@ const result =  await client.call({
             {
                 abi,
                 functionName: "getShardID",
-                args: [28]
+                args: [26]
             }
         ),
     }, "latest");
