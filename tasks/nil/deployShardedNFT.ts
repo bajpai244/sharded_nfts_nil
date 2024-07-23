@@ -2,11 +2,10 @@ import { task } from "hardhat/config";
 import { PublicClient, HttpTransport, LocalECDSAKeySigner, type Hex, WalletV1, waitTillCompleted } from "@nilfoundation/niljs"
 // import { PublicClient, HttpTransport, LocalECDSAKeySigner, type Hex, WalletV1, waitTillCompleted } from "../../nil.js"
 import { config } from "dotenv";
-import { encodeFunctionData } from "viem";
 
 config();
 
-task("mint", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
+task("deploy", "Deploy the Sharded NFT contract").setAction(async (taskArgs, hre) => {
 
     const privateKey = process.env.PRIVATE_KEY as Hex | undefined;
     if (!privateKey) {
@@ -21,11 +20,6 @@ task("mint", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
     const endpoint = process.env.NIL_RPC_ENDPOINT;
     if (!endpoint) {
         throw new Error("NIL_RPC_ENDPOINT is not set");
-    }
-
-    const nftAddress = process.env.NFT_CONTRACT_ADDR as Hex | undefined;
-    if (!nftAddress) {
-        throw new Error("NFT_CONTRACT_ADDR is not set");
     }
 
     const shardId = 1;
@@ -56,18 +50,20 @@ task("mint", "Mint sharded NFT").setAction(async (taskArgs, hre) => {
 
     const artifact = await hre.artifacts.readArtifact("ShardedNFT");
     const abi = artifact.abi;
+    const bytecode = artifact.bytecode as Hex;
 
-    const hash = await wallet.sendMessage({
-        to: nftAddress,
-       data: encodeFunctionData(
-        {
-         abi,
-         functionName: "mintTo",
-        args: [walletAddress.toLowerCase(), 0],
-        }),
-        gas: 10000000n,
-        value: 0n
+    const {address, hash}  = await wallet.deployContract({
+      bytecode,
+      abi,
+      salt: BigInt(Math.floor(Math.random() * 10000)),
+      shardId,
+      gas: 10000000n,
+      args: [1,4,100]
     });
 
-    console.log('NFT mint transaction hash: ', hash);
+    await waitTillCompleted(client, 1, hash);
+
+    console.log('Contract deployed at address: ', address);
+    console.log('Transaction hash: ', hash);
+
 });

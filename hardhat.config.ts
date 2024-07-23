@@ -5,10 +5,10 @@ import type { NilHardhatUserConfig } from "@nilfoundation/hardhat-plugin";
 import "@nilfoundation/hardhat-plugin";
 
 // Import tasks
-// import "./tasks/incrementer";
-// import "./tasks/deployIncrementer";
-import "./tasks/deployShardedNFT";
-import "./tasks/mintShardedNFT"
+import "./tasks/nil/deployShardedNFT";
+import "./tasks/local/deployShardedNFTLocal";
+import "./tasks/nil/mintShardedNFT"
+import "./tasks/local/mintShardedNFTLocal"
 
 dotenv.config();
 
