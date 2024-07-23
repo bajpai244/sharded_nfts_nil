@@ -4,7 +4,8 @@
     "@nilfoundation/niljs": "^0.10.1",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "dotenv": "^16.4.5",
-    "hardhat": "^2.22.6"
+    "hardhat": "^2.22.6",
+    "@types/bun": "latest"
   },
   "dependencies": {
     "@nilfoundation/hardhat-plugin": "^0.1.9",
@@ -13,9 +14,12 @@
   },
   "scripts": {
     "compile": "hardhat compile",
-    "deploy": "hardhat deploy",
+    "deploy": "hardhat deploy --network nil",
     "deploy_local": "hardhat deploy_local",
-    "mint": "hardhat mint",
+    "mint": "hardhat mint --network nil",
     "mint_local": "hardhat mint_local"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }
