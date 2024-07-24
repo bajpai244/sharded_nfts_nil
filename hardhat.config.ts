@@ -7,8 +7,10 @@ import "@nilfoundation/hardhat-plugin";
 // Import tasks
 import "./tasks/nil/deployShardedNFT";
 import "./tasks/local/deployShardedNFTLocal";
-import "./tasks/nil/mintShardedNFT"
-import "./tasks/local/mintShardedNFTLocal"
+import "./tasks/nil/mintShardedNFT";
+import "./tasks/local/mintShardedNFTLocal";
+
+import "./tasks/nil/benchmarking/mint/singleShard";
 
 dotenv.config();
 
@@ -24,6 +26,6 @@ const config: NilHardhatUserConfig = {
     },
   },
   walletAddress: process.env.WALLET_ADDR,
-  shardId: 1
+  shardId: 1,
 };
 export default config;

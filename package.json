@@ -18,7 +18,8 @@
     "deploy": "hardhat deploy --network nil",
     "deploy_local": "hardhat deploy_local",
     "mint": "hardhat mint --network nil",
-    "mint_local": "hardhat mint_local"
+    "mint_local": "hardhat mint_local",
+    "benchmark-mint-shard-size-1": "hardhat benchmark-mint-shard-size-1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

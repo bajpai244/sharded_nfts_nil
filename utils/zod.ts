@@ -22,6 +22,6 @@ export const BenchmarkConfigSchema = z.object({
     "0": ShardInfoSchema,
     "1": ShardInfoSchema,
     "2": ShardInfoSchema,
-    "4": ShardInfoSchema,
+    "3": ShardInfoSchema,
   }),
 });
