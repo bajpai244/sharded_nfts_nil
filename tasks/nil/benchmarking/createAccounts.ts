@@ -58,7 +58,7 @@ task(
 
     const walletsCollection: Array<z.infer<typeof AccountInfoSchema>> = [];
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 10; i++) {
       const wallet = new WalletV1({
         pubkey: pubkey,
         // TODO: extract to a util
@@ -84,7 +84,9 @@ task(
     }
 
     const benchmarkConfig = getBenchmarkConfig(BENCHMARK_CONFIG_FILE_PATH);
-    benchmarkConfig.ShardsInfo[shardId].otherWalletsInfo = walletsCollection;
+    benchmarkConfig.ShardsInfo[shardId].otherWalletsInfo.push(
+      ...walletsCollection,
+    );
 
     writeFileSync(
       BENCHMARK_CONFIG_FILE_PATH,

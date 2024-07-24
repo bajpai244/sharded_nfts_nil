@@ -27,7 +27,9 @@ contract ShardedNFT is ERC721, Ownable {
     }
 
     // Allows minting of a new NFT
-    function mintTo(address collector, uint256 tokenId) public onlyOwner() onlyThisShard(tokenId) payable{
+    // TODO: removing onlyOwner modifier fo testing
+    // function mintTo(address collector, uint256 tokenId) public onlyOwner() onlyThisShard(tokenId) payable{
+    function mintTo(address collector, uint256 tokenId) public onlyThisShard(tokenId) payable{
         _safeMint(collector, tokenId);
     }
 

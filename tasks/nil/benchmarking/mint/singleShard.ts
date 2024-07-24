@@ -9,7 +9,12 @@ import {
 } from "@nilfoundation/niljs";
 // import { PublicClient, HttpTransport, LocalECDSAKeySigner, type Hex, WalletV1, waitTillCompleted } from "../../nil.js"
 import { config } from "dotenv";
-import { getBenchmarkConfig, getEnv, sleep } from "../../../../utils";
+import {
+  CircularList,
+  getBenchmarkConfig,
+  getEnv,
+  sleep,
+} from "../../../../utils";
 import { EnvSchema } from "../../../../utils/zod";
 import { encodeFunctionData } from "viem";
 import { writeFileSync } from "fs";
@@ -21,7 +26,7 @@ task(
   "benchmark mints on single shard",
 ).setAction(async (taskArgs, hre) => {
   const shardId = 1;
-  const totalShards = 2;
+  const totalShards = 1;
 
   const { BENCHMARK_CONFIG_FILE_PATH } = EnvSchema.pick({
     BENCHMARK_CONFIG_FILE_PATH: true,
@@ -34,7 +39,7 @@ task(
     transport: new HttpTransport({
       endpoint: config.NilRpcEndpoint,
     }),
-    shardId,
+    shardId: shardId,
   });
 
   const signer = new LocalECDSAKeySigner({
@@ -56,7 +61,7 @@ task(
   const artifact = await hre.artifacts.readArtifact("ShardedNFT");
   const abi = artifact.abi;
   const bytecode = artifact.bytecode as Hex;
-  const totalSupply = 200;
+  const totalSupply = 500;
 
   const { address: nftAddress, hash: nftDeployTxHash } =
     await wallet.deployContract({
@@ -64,44 +69,58 @@ task(
       abi,
       salt: BigInt(Math.floor(Math.random() * 10000)),
       shardId,
-      args: [shardId, totalShards, totalSupply],
+      // NOTE: We are using shardId-1 because shard 0 is supposed to be the master shard
+      args: [shardId - 1, totalShards, totalSupply],
       gas: 200000n,
       value: 5000000n,
     });
 
-  await waitTillCompleted(client, 1, nftDeployTxHash);
+  await waitTillCompleted(client, shardId, nftDeployTxHash);
 
   console.log("Contract deployed at address: ", nftAddress);
   console.log("Transaction hash: ", nftDeployTxHash);
 
-  let seqNo = await client.getMessageCount(walletAddress, "latest");
+  const walletsList = new CircularList(
+    config.ShardsInfo[shardId].otherWalletsInfo,
+  );
 
-  const mintTxnHashCollection: Array<Hex> = [];
-  const mintTxnPromiseCollection: Array<Promise<void>> = [];
+  const mintTxnHashList: Array<Hex> = [];
+  const mintTxnPromiseList: Array<Promise<void>> = [];
 
-  for (let idx = 101; idx < 104; idx += 1) {
+  for (let idx = 0; idx < 180; idx += 1) {
+    const { privateKey, walletAddress } = walletsList.next();
+    const signer = new LocalECDSAKeySigner({
+      privateKey: privateKey as Hex,
+    });
+
+    const pubKey = await signer.getPublicKey();
+
+    const wallet = new WalletV1({
+      pubkey: pubKey,
+      client,
+      signer,
+      address: walletAddress as Hex,
+    });
+
     const mintPromise = sendNftMintMessage({
       abi,
       nftAddress,
-      tokenId: 101,
+      tokenId: idx,
       wallet,
-      seqNo,
     }).then((txnHash) => {
-      mintTxnHashCollection.push(txnHash);
+      mintTxnHashList.push(txnHash);
     });
 
-    mintTxnPromiseCollection.push(mintPromise);
+    mintTxnPromiseList.push(mintPromise);
 
-    await sleep(200);
-    seqNo += 1;
-
+    await sleep(50);
     console.log("sent txn for tokenId: ", idx);
   }
 
-  await Promise.all(mintTxnPromiseCollection);
+  await Promise.all(mintTxnPromiseList);
   console.log("successfully sent all mint transactions");
 
-  const txnHashData = JSON.stringify(mintTxnHashCollection);
+  const txnHashData = JSON.stringify(mintTxnHashList);
 
   writeFileSync("./mintTxnHashData.json", txnHashData);
   console.log("txn hash data written to file");
@@ -112,9 +131,8 @@ const sendNftMintMessage = async (arg: {
   nftAddress: Hex;
   tokenId: number;
   wallet: WalletV1;
-  seqNo: number;
 }): Promise<Hex> => {
-  const { abi, nftAddress, tokenId, wallet, seqNo } = arg;
+  const { abi, nftAddress, tokenId, wallet } = arg;
 
   const mintTxnHash = await wallet.sendMessage({
     to: nftAddress,

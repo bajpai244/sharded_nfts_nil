@@ -20,7 +20,8 @@
     "mint": "hardhat mint --network nil",
     "mint_local": "hardhat mint_local",
     "deploy_and_fund_wallet": "yarn hardhat deploy_and_fund_wallet",
-    "benchmark-mint-shard-size-1": "hardhat benchmark-mint-shard-size-1"
+    "benchmark-mint-shard-size-1": "hardhat benchmark-mint-shard-size-1",
+    "deploy_accounts_benchmarking": "yarn hardhat deploy_accounts_benchmarking"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
