@@ -2,6 +2,14 @@
 
 Let's explore sharded NFTs?
 
+## Warning
+
+---
+
+The code is currently hacky! **But works!** Improvements on the way :)
+
+<img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmdzeG1oOHY2dGwzdGhpbnQ0dDI2OGRtMTE2c29vbjhsaXI5NHFsbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wJ8QGSXasDvPy/giphy.gif">
+
 **Why NFTs?**
 
 ---
@@ -47,3 +55,65 @@ But, this is still not enough for scenarios where there is high demand for block
 > Imagine the gas fees spikes as so many people want to access the same the VM at the same time, this will exclude so many people who want to particiapate in this RWA, who just simply cannot participate as they cannot outbid whales for gas! { this is truly a question of financial inclusion! }
 
 <img width="900px" src="./assets/many_people_using.png" />
+
+## Exploring Sharding as a solution for this!
+
+---
+
+Now, in a sharded blockchain like `=nil;` this NFT data on top of which transactions are processed, can be splitted across multiple shards, [as discussed](https://www.notion.so/Sharded-NFTs-with-nil-bb298accf8ed42739033b191d0ec1fc2?pvs=21) that NFTs are just a bunch of records on chain. You can split these records across multiple shards and unlock parallel compute over the collection for transactions that touch different shards as part of their execution!
+
+<img widht="900px" src="./assets/sharded_solution.png"  />
+
+For example in the above diagram, various Token IDs have been equally splitted across the 4 shards.
+
+- this way if there are 95000 NFT as in case of otherside, it will be 95000/N number of records per shard!
+- If we consider an average of 30 TPS per shard { 15 TPS already observed as part of benchmarking on =nil; }, let’s look at the average tx time as the number of shard increase:
+
+<img src="./assets/table.png" />
+
+## Implementation
+
+We have made use of shard aware contracts!
+
+We deploy multiple contracts across multiple shards, where each shard only handles totalToken/totalNumberOfShards tokens!
+
+This divides the state horizontally across number of shards.
+
+We extend the Ethereum ERC721, and make use of a new function and modifier to achieve horizontal scaling!
+
+## `getShard`
+
+This function allows getting the shardID whose contract is responible for managing a specific tokenId state.
+
+```
+ // function which our NFT contract can call on the shard to find which token ragnes are valid for its shard
+    function getShardID(uint256 tokenID) public view returns (uint256) {
+        // totalSupply is stored as part of the contract where this function lives
+        require(tokenID < totalSupply, "Invalid tokenID");
+
+        // numberOfShards is stored as part of the contract as well
+        uint256 tokensPerShard = totalSupply / numberOfShards;
+        uint256 shardID = tokenID / tokensPerShard;
+
+        // Ensure shardID does not exceed the number of shards
+        if (shardID >= numberOfShards) {
+            shardID = numberOfShards - 1;
+        }
+
+        return shardID;
+    }
+```
+
+## `onlyThisShard(uint256 tokenId)`
+
+This modifier is applied to all state updating or view functions of ERC721 which operate on a specific token ID. It acts as a guard to make sure that a contract is only handling state of the tokenID it is managing!
+
+```
+    /**
+     * @dev Throws if the token ID doesn't belong to this shard
+     */
+    modifier onlyThisShard(uint256 tokenId) {
+        require(getShardID(tokenId) == shardId, "Token does not belong to this shard");
+        _;
+    }
+```
