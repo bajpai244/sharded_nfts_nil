@@ -9,6 +9,7 @@ import {
 } from "@nilfoundation/niljs";
 // import { PublicClient, HttpTransport, LocalECDSAKeySigner, type Hex, WalletV1, waitTillCompleted } from "../../nil.js"
 import { config } from "dotenv";
+import { getEnv } from "../../../../utils";
 
 config();
 
@@ -16,20 +17,7 @@ task(
   "benchmark-mint-shard-size-1",
   "benchmark mints on single shard",
 ).setAction(async (taskArgs, hre) => {
-  const privateKey = process.env.PRIVATE_KEY as Hex | undefined;
-  if (!privateKey) {
-    throw new Error("PRIVATE_KEY is not set");
-  }
-
-  const walletAddress = process.env.WALLET_ADDR as Hex | undefined;
-  if (!walletAddress) {
-    throw new Error("WALLET_ADDR is not set");
-  }
-
-  const endpoint = process.env.NIL_RPC_ENDPOINT;
-  if (!endpoint) {
-    throw new Error("NIL_RPC_ENDPOINT is not set");
-  }
+  const { NIL_RPC_ENDPOINT, PRIVATE_KEY, WALLET_ADDR } = getEnv();
 
   const shardId = 1;
 
