@@ -7,7 +7,7 @@ import {
   WalletV1,
   waitTillCompleted,
 } from "@nilfoundation/niljs";
-// import { PublicClient, HttpTransport, LocalECDSAKeySigner, type Hex, WalletV1, waitTillCompleted } from "../../nil.js"
+
 import { config } from "dotenv";
 
 config();

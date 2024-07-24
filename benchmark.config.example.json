@@ -3,12 +3,12 @@
   "ShardsInfo": {
     "0": {
       "deployerInfo": {
-        "privateKey": "",
+        "privateKey": "0x",
         "walletAddress": "0x"
       },
       "otherWalletsInfo": [
         {
-          "privateKey": "",
+          "privateKey": "0x",
           "walletAddress": "0x"
         }
       ]
@@ -27,24 +27,24 @@
     },
     "2": {
       "deployerInfo": {
-        "privateKey": "",
+        "privateKey": "0x",
         "walletAddress": "0x"
       },
       "otherWalletsInfo": [
         {
-          "privateKey": "",
+          "privateKey": "0x",
           "walletAddress": "0x"
         }
       ]
     },
     "3": {
       "deployerInfo": {
-        "privateKey": "",
+        "privateKey": "0x",
         "walletAddress": "0x"
       },
       "otherWalletsInfo": [
         {
-          "privateKey": "",
+          "privateKey": "0x",
           "walletAddress": "0x"
         }
       ]
