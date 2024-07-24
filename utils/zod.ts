@@ -10,12 +10,12 @@ export const EnvSchema = z.object({
   BENCHMARK_CONFIG_FILE_PATH: z.string(),
 });
 
-const AccountInfoSchema = z.object({
+export const AccountInfoSchema = z.object({
   privateKey: privateKeySchema,
   walletAddress: contractAddressSchema,
 });
 
-const ShardInfoSchema = z.object({
+export const ShardInfoSchema = z.object({
   deployerInfo: AccountInfoSchema,
   otherWalletsInfo: z.array(AccountInfoSchema),
 });
@@ -23,7 +23,6 @@ const ShardInfoSchema = z.object({
 export const BenchmarkConfigSchema = z.object({
   NilRpcEndpoint: z.string().url(),
   ShardsInfo: z.object({
-    "0": ShardInfoSchema,
     "1": ShardInfoSchema,
     "2": ShardInfoSchema,
     "3": ShardInfoSchema,

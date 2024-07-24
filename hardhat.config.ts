@@ -13,6 +13,7 @@ import "./tasks/local/mintShardedNFTLocal";
 import "./tasks/nil/deployAndfundWallet";
 
 import "./tasks/nil/benchmarking/mint/singleShard";
+import "./tasks/nil/benchmarking/createAccounts";
 
 dotenv.config();
 

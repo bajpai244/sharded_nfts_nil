@@ -14,3 +14,6 @@ export const getBenchmarkConfig = (
 
   return BenchmarkConfigSchema.parse(benchmarkFileJson);
 };
+
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

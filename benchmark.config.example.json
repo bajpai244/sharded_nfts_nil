@@ -1,18 +1,6 @@
 {
   "NilRpcEndpoint": "",
   "ShardsInfo": {
-    "0": {
-      "deployerInfo": {
-        "privateKey": "0x",
-        "walletAddress": "0x"
-      },
-      "otherWalletsInfo": [
-        {
-          "privateKey": "0x",
-          "walletAddress": "0x"
-        }
-      ]
-    },
     "1": {
       "deployerInfo": {
         "privateKey": "",
