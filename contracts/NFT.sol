@@ -81,15 +81,7 @@ contract ShardedNFT is ERC721, Ownable {
         // totalSupply is stored as part of the contract where this function lives
         require(tokenID < totalSupply, "Invalid tokenID");
 
-        // numberOfShards is stored as part of the contract as well
-        uint256 tokensPerShard = totalSupply / numberOfShards;
-        uint256 shardID = tokenID / tokensPerShard;
-
-        // Ensure shardID does not exceed the number of shards
-        if (shardID >= numberOfShards) {
-            shardID = numberOfShards - 1;
-        }
-
-        return shardID;
+        uint256 tokenShardId = tokenID % numberOfShards;
+        return tokenShardId;
     }
 }
