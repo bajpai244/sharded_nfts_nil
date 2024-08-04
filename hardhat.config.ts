@@ -14,6 +14,7 @@ import "./tasks/nil/deployAndfundWallet";
 
 import "./tasks/nil/benchmarking/mint/singleShard";
 import "./tasks/nil/benchmarking/createAccounts";
+import "./tasks/nil/deployAndfundWallets";
 
 dotenv.config();
 

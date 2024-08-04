@@ -1,12 +1,11 @@
 import { task } from "hardhat/config";
 import {
   Faucet,
-  Hex,
+  type Hex,
   HttpTransport,
   LocalECDSAKeySigner,
   PublicClient,
   WalletV1,
-  generateRandomPrivateKey,
 } from "@nilfoundation/niljs";
 
 import { config } from "dotenv";
@@ -21,7 +20,7 @@ task("deploy_and_fund_wallet", "Deploy and fund wallet")
       WALLET_ADDR: true,
     }).parse(process.env);
 
-    const shardId = parseInt(taskArgs.shard);
+    const shardId = Number.parseInt(taskArgs.shard);
 
     console.log("moving ahead for wallet deployment on shard : ", shardId);
 

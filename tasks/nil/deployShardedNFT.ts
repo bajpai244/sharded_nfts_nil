@@ -29,13 +29,10 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
       throw new Error("NIL_RPC_ENDPOINT is not set");
     }
 
-    const shardId = 1;
-
     const client = new PublicClient({
       transport: new HttpTransport({
         endpoint,
       }),
-      shardId,
     });
 
     const signer = new LocalECDSAKeySigner({
@@ -51,26 +48,32 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
       address: walletAddress,
     });
 
-    const wa = wallet.getAddressHex();
-    console.log("wallet address: ", wa);
+    const totalNumberOfShards = 3;
 
     const artifact = await hre.artifacts.readArtifact("ShardedNFT");
     const abi = artifact.abi;
     const bytecode = artifact.bytecode as Hex;
 
-    const { address, hash } = await wallet.deployContract({
-      bytecode,
-      abi,
-      salt: BigInt(Math.floor(Math.random() * 10000)),
-      shardId,
-      args: [shardId, 4, 100],
-      gas: 200000n,
-      value: 5000000n,
-    });
+    const wa = wallet.getAddressHex();
+    console.log("wallet address: ", wa);
 
-    await waitTillCompleted(client, 1, hash);
+    for (let shardId = 1; shardId < totalNumberOfShards + 1; shardId++) {
+      client.setShardId(shardId);
 
-    console.log("Contract deployed at address: ", address);
-    console.log("Transaction hash: ", hash);
+      const { address, hash } = await wallet.deployContract({
+        bytecode,
+        abi,
+        salt: BigInt(Math.floor(Math.random() * 10000)),
+        shardId,
+        args: [shardId - 1, totalNumberOfShards, 100],
+        gas: 200000n,
+        value: 5000000n,
+      });
+
+      await waitTillCompleted(client, 1, hash);
+
+      console.log("Contract deployed at address: ", address);
+      console.log("Transaction hash: ", hash);
+    }
   },
 );
