@@ -12,6 +12,7 @@ import { config } from "dotenv";
 import { EnvSchema } from "../../utils/zod";
 import { writeFileSync } from "node:fs";
 import { TOTAL_NUMBER_OF_SHARDS } from "./contants";
+import { WalletDeployments } from "./types";
 
 config();
 
@@ -33,7 +34,7 @@ task("deploy_and_fund_wallets", "Deploy and fund wallet").setAction(
       privateKey: PRIVATE_KEY as Hex,
     });
 
-    const walletAddresses: string[] = [];
+    const deployments: WalletDeployments = {};
 
     for (let shardId = 1; shardId <= TOTAL_NUMBER_OF_SHARDS; shardId++) {
       client.setShardId(shardId);
@@ -52,28 +53,18 @@ task("deploy_and_fund_wallets", "Deploy and fund wallet").setAction(
       const walletAddress = wallet.getAddressHex();
       console.log("walletAddress:", walletAddress);
 
-      walletAddresses.push(walletAddress);
-
       // 0.1 Eth
       await faucet.withdrawToWithRetry(walletAddress, 100000000000000000n);
 
       await wallet.selfDeploy(true);
 
       console.log("wallet deployed successfully");
+
+      deployments[`shard${shardId}`] = {
+        address: walletAddress,
+      };
     }
 
-    writeFileSync(
-      "./walletAddresses.json",
-      JSON.stringify(
-        walletAddresses.map((ele, idx) => {
-          const key = `shard${idx + 1}`;
-
-          return {
-            [key]: ele,
-          };
-        }),
-        null,
-      ),
-    );
+    writeFileSync("./walletAddresses.json", JSON.stringify(deployments, null));
   },
 );
