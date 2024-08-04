@@ -64,7 +64,16 @@ task("deploy_and_fund_wallets", "Deploy and fund wallet").setAction(
 
     writeFileSync(
       "./walletAddresses.json",
-      JSON.stringify(walletAddresses, null),
+      JSON.stringify(
+        walletAddresses.map((ele, idx) => {
+          const key = `shard${idx + 1}`;
+
+          return {
+            [key]: ele,
+          };
+        }),
+        null,
+      ),
     );
   },
 );
