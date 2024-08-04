@@ -12,7 +12,7 @@ import { config } from "dotenv";
 import { EnvSchema } from "../../utils/zod";
 import { writeFileSync } from "node:fs";
 import { TOTAL_NUMBER_OF_SHARDS } from "./contants";
-import { WalletDeployments } from "./types";
+import type { WalletDeployments } from "./types";
 
 config();
 
