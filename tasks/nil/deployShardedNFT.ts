@@ -7,10 +7,11 @@ import {
   WalletV1,
   waitTillCompleted,
 } from "@nilfoundation/niljs";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 import { config } from "dotenv";
 import { TOTAL_NUMBER_OF_SHARDS } from "./contants";
+import { ContractDeployments, WalletDeployments } from "./types";
 
 config();
 
@@ -26,9 +27,9 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
       throw new Error("NIL_RPC_ENDPOINT is not set");
     }
 
-    const walletAddresses: {
-      [key in string]: Hex;
-    } = JSON.parse(readFileSync("./walletAddresses.json", "utf-8"));
+    const walletAddresses: WalletDeployments = JSON.parse(
+      readFileSync("./walletAddresses.json", "utf-8"),
+    );
 
     const client = new PublicClient({
       transport: new HttpTransport({
@@ -42,6 +43,8 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
 
     const pubKey = await signer.getPublicKey();
 
+    const deployments: ContractDeployments = {};
+
     const artifact = await hre.artifacts.readArtifact("ShardedNFT");
     const abi = artifact.abi;
     const bytecode = artifact.bytecode as Hex;
@@ -49,7 +52,7 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
     for (let shardId = 1; shardId <= TOTAL_NUMBER_OF_SHARDS; shardId++) {
       client.setShardId(shardId);
 
-      const walletAddress = walletAddresses[`shard${shardId}`];
+      const { address: walletAddress } = walletAddresses[`shard${shardId}`];
       console.log("Deploying contract via wallet: ", walletAddress);
 
       const wallet = new WalletV1({
@@ -69,10 +72,18 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
         value: 5000000n,
       });
 
-      await waitTillCompleted(client, 1, hash);
+      await waitTillCompleted(client, shardId, hash);
 
       console.log("Contract deployed at address: ", address);
       console.log("Transaction hash: ", hash);
+
+      deployments[`shard${shardId}`] = {
+        address,
+        transactionHash: hash,
+      };
     }
+
+    console.log("Writing contract deployments to file");
+    writeFileSync("./deployments.json", JSON.stringify(deployments, null));
   },
 );

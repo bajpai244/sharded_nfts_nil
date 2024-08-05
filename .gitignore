@@ -21,3 +21,6 @@ benchmark.config.json
 
 # wallet addresses dump file
 walletAddresses.json
+
+# dump file for contract deployments
+deployments.json

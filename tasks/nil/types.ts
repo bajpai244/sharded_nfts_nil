@@ -5,3 +5,10 @@ export type WalletDeployments = {
     address: Hex;
   };
 };
+
+export type ContractDeployments = {
+  [key in `shard${number}`]: {
+    address: Hex;
+    transactionHash: Hex;
+  };
+};
