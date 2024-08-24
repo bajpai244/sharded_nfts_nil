@@ -76,7 +76,7 @@ contract ShardedNFT is ERC721, Ownable {
         super.safeTransferFrom(from, to, tokenId, data);
     }
 
-    // function which our NFT contract can call on the shard to find which token ragnes are valid for its shard
+    // function which our NFT contract can call on the find the shardID of a token
     function getShardID(uint256 tokenID) public view returns (uint256) {
         // totalSupply is stored as part of the contract where this function lives
         require(tokenID < totalSupply, "Invalid tokenID");
