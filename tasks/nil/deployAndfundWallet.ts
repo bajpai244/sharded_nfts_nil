@@ -10,7 +10,6 @@ import {
 
 import { config } from "dotenv";
 import { EnvSchema } from "../../utils/zod";
-import { bigint } from "zod";
 config();
 
 task("deploy_and_fund_wallet", "Deploy and fund wallet")
@@ -59,24 +58,3 @@ task("deploy_and_fund_wallet", "Deploy and fund wallet")
 
     console.log("wallet deployed successfully");
   });
-
-//   const faucet = new Faucet(client);
-
-//   const signer = new LocalECDSAKeySigner({
-//     privateKey: generateRandomPrivateKey(),
-//   });
-
-//   const pubkey = await signer.getPublicKey();
-
-//   const wallet = new WalletV1({
-//     pubkey: pubkey,
-//     salt: 100n,
-//     shardId: 1,
-//     client,
-//     signer,
-//   });
-//   const walletAddress = await wallet.getAddressHex();
-
-//   await faucet.withdrawToWithRetry(walletAddress, 100000n);
-
-//   await wallet.selfDeploy(true);
