@@ -62,14 +62,17 @@ task("deploy", "Deploy the Sharded NFT contract").setAction(
         address: walletAddress,
       });
 
+      
+      const gasPrice = await client.getGasPrice(shardId);
+
       const { address, hash } = await wallet.deployContract({
         bytecode,
         abi,
         salt: BigInt(Math.floor(Math.random() * 10000)),
         shardId,
-        args: [shardId - 1, TOTAL_NUMBER_OF_SHARDS, 100],
-        gas: 200000n,
-        value: 5000000n,
+        args: [shardId, TOTAL_NUMBER_OF_SHARDS, 100],
+        feeCredit: 100_000n * gasPrice,
+        value: 100000n
       });
 
       await waitTillCompleted(client, shardId, hash);

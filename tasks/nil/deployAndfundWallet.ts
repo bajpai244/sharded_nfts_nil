@@ -1,4 +1,4 @@
-import { task } from "hardhat/config";
+import { task, types } from "hardhat/config";
 import {
   Faucet,
   type Hex,
@@ -13,7 +13,8 @@ import { EnvSchema } from "../../utils/zod";
 config();
 
 task("deploy_and_fund_wallet", "Deploy and fund wallet")
-  .addParam<number>("shard", "The shard Id to deploy this wallet to")
+  .addParam<number>("shard", "The shard Id to deploy this wallet to", undefined, types.int)
+  .addParam<number>("tokenId", "The token ID to be associated with this wallet", undefined, types.int)
   .setAction(async (taskArgs, hre) => {
     const { NIL_RPC_ENDPOINT, PRIVATE_KEY } = EnvSchema.omit({
       WALLET_ADDR: true,
